@@ -42,16 +42,19 @@ public static class ConsoleExtensions
 
         static void ConsoleReadKey()
         {
-            var key = Console.ReadKey(true).Key;
+            while (true)
+            {
+                var key = Console.ReadKey(true).Key;
 
-            if (keyRequested)
-            {
-                pressed = key;
-                cts.Cancel();
-            }
-            else
-            {
-                KeyPressed?.Invoke(null, new KeyPressedEventArgs { Key = key });
+                if (keyRequested)
+                {
+                    pressed = key;
+                    cts.Cancel();
+                }
+                else
+                {
+                    KeyPressed?.Invoke(null, new KeyPressedEventArgs { Key = key });
+                }
             }
         }
     }
