@@ -70,6 +70,11 @@ dotnet_naming_rule.constant_fields_should_be_pascal_case.style    = pascal_case_
 dotnet_naming_symbols.constant_fields.applicable_kinds            = field
 dotnet_naming_symbols.constant_fields.applicable_accessibilities  = *
 dotnet_naming_symbols.constant_fields.required_modifiers          = const
+dotnet_style_operator_placement_when_wrapping = beginning_of_line
+tab_width = 4
+end_of_line = crlf
+dotnet_style_prefer_collection_expression = true:suggestion
+dotnet_style_prefer_simplified_boolean_expressions = true:suggestion
 
 ###############################
 # C# Code Style Rules         #
@@ -143,6 +148,30 @@ csharp_space_after_dot = false
 # Wrapping preferences
 csharp_preserve_single_line_statements = true
 csharp_preserve_single_line_blocks = true
+csharp_using_directive_placement = outside_namespace:silent
+csharp_prefer_simple_using_statement = true:suggestion
+csharp_style_namespace_declarations = block_scoped:silent
+csharp_style_prefer_method_group_conversion = true:silent
+csharp_style_prefer_top_level_statements = true:silent
+csharp_style_prefer_primary_constructors = true:suggestion
+csharp_style_expression_bodied_lambdas = true:silent
+csharp_style_expression_bodied_local_functions = false:silent
+
+dotnet_diagnostic.CA1303.severity = none
+dotnet_diagnostic.CA1801.severity = suggestion
+dotnet_diagnostic.CA2007.severity = silent
+
+dotnet_diagnostic.IDE0057.severity = none   # Use range operator
+dotnet_diagnostic.IDE0290.severity = none   # Use primary constructors
+
+dotnet_diagnostic.SA0001.severity = none
+dotnet_diagnostic.SA1008.severity = none
+dotnet_diagnostic.SA1200.severity = none
+dotnet_diagnostic.SA1400.severity = error
+dotnet_diagnostic.SA1600.severity = none
+dotnet_diagnostic.SA1601.severity = none
+dotnet_diagnostic.SA1602.severity = none
+dotnet_diagnostic.SA1633.severity = none
 
 ##################################
 # Visual Basic Code Style Rules  #
