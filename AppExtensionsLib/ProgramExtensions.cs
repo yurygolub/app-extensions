@@ -42,13 +42,23 @@ public static class ProgramExtensions
         return ConsoleExtensions.GetKey() == ConsoleKey.Spacebar;
     }
 
-    public static void SubscribeEscapeKeyPress()
+    public static void SubscribeCancelKeyPress(Action cancelKeyPressAction = null)
+    {
+        Console.CancelKeyPress += (o, e) =>
+        {
+            Cts?.Cancel();
+            cancelKeyPressAction?.Invoke();
+        };
+    }
+
+    public static void SubscribeEscapeKeyPress(Action escPressAction = null)
     {
         ConsoleExtensions.KeyPressed += (o, e) =>
         {
             if (e.Key == ConsoleKey.Escape)
             {
                 Cts?.Cancel();
+                escPressAction?.Invoke();
             }
         };
     }
