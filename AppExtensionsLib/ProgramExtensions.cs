@@ -46,7 +46,7 @@ public static class ProgramExtensions
     {
         Console.CancelKeyPress += (o, e) =>
         {
-            Cts?.Cancel();
+            Cts.Cancel();
             cancelKeyPressAction?.Invoke();
         };
     }
@@ -57,7 +57,7 @@ public static class ProgramExtensions
         {
             if (e.Key == ConsoleKey.Escape)
             {
-                Cts?.Cancel();
+                Cts.Cancel();
                 escPressAction?.Invoke();
             }
         };

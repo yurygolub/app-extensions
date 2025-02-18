@@ -6,11 +6,10 @@ namespace AppExtensionsLib;
 
 public static class ConsoleExtensions
 {
-    private static CancellationTokenSource cts = new ();
-
-    private static ConsoleKey? pressed;
+    private static ConsoleKey pressedKey;
 
     private static bool keyRequested;
+    private static bool isPressed;
 
     public static event EventHandler<KeyPressedEventArgs> KeyPressed;
 
@@ -18,38 +17,36 @@ public static class ConsoleExtensions
     {
         keyRequested = true;
 
-        try
+        while (!isPressed)
         {
-            Task.Delay(Timeout.Infinite, cts.Token).Wait();
-        }
-        catch (AggregateException)
-        {
+            Thread.Sleep(1);
         }
 
+        isPressed = false;
         keyRequested = false;
-
-        var result = pressed.Value;
-        pressed = null;
-
-        cts = new CancellationTokenSource();
-
-        return result;
+        return pressedKey;
     }
 
-    public static async Task StartAsync()
+    public static async Task StartAsync(CancellationToken token = default)
     {
-        await Task.Run(ConsoleReadKey);
+        await Task.Run(() => ConsoleReadKey(token), token);
 
-        static void ConsoleReadKey()
+        static void ConsoleReadKey(CancellationToken token)
         {
             while (true)
             {
-                var key = Console.ReadKey(true).Key;
+                while (!Console.KeyAvailable)
+                {
+                    Thread.Sleep(1);
+                    token.ThrowIfCancellationRequested();
+                }
+
+                ConsoleKey key = Console.ReadKey(true).Key;
 
                 if (keyRequested)
                 {
-                    pressed = key;
-                    cts.Cancel();
+                    pressedKey = key;
+                    isPressed = true;
                 }
                 else
                 {
