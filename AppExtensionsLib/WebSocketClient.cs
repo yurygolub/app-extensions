@@ -2,35 +2,26 @@
 using System.Net.WebSockets;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace AppExtensionsLib;
 
 public class WebSocketClient
 {
     private readonly Uri uri;
+    private readonly ILogger<WebSocketClient> logger;
 
-    private readonly Action<string> logError;
-    private readonly Action<string, object> logWarn;
-    private readonly Action<string, object> logInfo;
-
-    public WebSocketClient(
-        Uri uri,
-        Action<string> logError = null,
-        Action<string, object> logWarn = null,
-        Action<string, object> logInfo = null)
+    public WebSocketClient(Uri uri, ILogger<WebSocketClient> logger)
     {
         this.uri = uri ?? throw new ArgumentNullException(nameof(uri));
-
-        this.logError = logError;
-        this.logWarn = logWarn;
-        this.logInfo = logInfo;
+        this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
     public async Task ConnectWebSocketAsync(ClientWebSocket socket, CancellationToken token)
     {
         await socket.ConnectAsync(this.uri, token);
 
-        this.logInfo?.Invoke("Connected to: {uri}", this.uri);
+        this.logger.LogInformation("Connected to: {uri}", this.uri);
     }
 
     public async ValueTask<ValueWebSocketReceiveResult?> ReceiveAsync(
@@ -44,7 +35,7 @@ public class WebSocketClient
 
             if (result.MessageType == WebSocketMessageType.Close)
             {
-                this.logWarn?.Invoke("Close from server", null);
+                this.logger.LogWarning("Close from server");
                 return null;
             }
 
@@ -71,7 +62,7 @@ public class WebSocketClient
 
             if (result.MessageType == WebSocketMessageType.Close)
             {
-                this.logWarn?.Invoke("Close from server", null);
+                this.logger.LogWarning("Close from server");
                 return null;
             }
 
@@ -81,7 +72,7 @@ public class WebSocketClient
         {
             if (!token.IsCancellationRequested)
             {
-                this.logError?.Invoke("Receiving timed out");
+                this.logger.LogError("Receiving timed out");
             }
 
             return null;
@@ -100,16 +91,16 @@ public class WebSocketClient
 
                 await socket.CloseAsync(WebSocketCloseStatus.NormalClosure, null, timeoutToken.Token);
 
-                this.logInfo?.Invoke("Disconnected from: {uri}", this.uri);
+                this.logger.LogInformation("Disconnected from: {uri}", this.uri);
             }
         }
         catch (OperationCanceledException)
         {
-            this.logError("Closing timed out");
+            this.logger.LogError("Closing timed out");
         }
         catch (WebSocketException ex)
         {
-            this.logError(ex.Message);
+            this.logger.LogError("{msg}", ex.Message);
         }
     }
 }
