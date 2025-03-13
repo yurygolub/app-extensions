@@ -15,6 +15,30 @@ public class WebSocketServer
         this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
+    public async Task<ValueWebSocketReceiveResult?> ReceiveAsync(
+        WebSocket webSocket,
+        Memory<byte> buffer,
+        int clientId,
+        CancellationToken token)
+    {
+        try
+        {
+            ValueWebSocketReceiveResult result = await webSocket.ReceiveAsync(buffer, token);
+
+            if (result.MessageType == WebSocketMessageType.Close)
+            {
+                this.logger.LogWarning("Close from client: {id}", clientId);
+                return null;
+            }
+
+            return result;
+        }
+        catch (OperationCanceledException)
+        {
+            return null;
+        }
+    }
+
     public async Task<ValueWebSocketReceiveResult?> ReceiveWithTimeoutAsync(
         WebSocket webSocket,
         Memory<byte> buffer,
