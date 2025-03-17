@@ -150,7 +150,7 @@ csharp_preserve_single_line_statements = true
 csharp_preserve_single_line_blocks = true
 csharp_using_directive_placement = outside_namespace:silent
 csharp_prefer_simple_using_statement = true:suggestion
-csharp_style_namespace_declarations = block_scoped:silent
+csharp_style_namespace_declarations = file_scoped:warning
 csharp_style_prefer_method_group_conversion = true:silent
 csharp_style_prefer_top_level_statements = true:silent
 csharp_style_prefer_primary_constructors = true:suggestion
@@ -161,8 +161,10 @@ dotnet_diagnostic.CA1303.severity = none
 dotnet_diagnostic.CA1801.severity = suggestion
 dotnet_diagnostic.CA2007.severity = silent
 
+dotnet_diagnostic.IDE0028.severity = none   # Collection initialization can be simplified
 dotnet_diagnostic.IDE0057.severity = none   # Use range operator
 dotnet_diagnostic.IDE0290.severity = none   # Use primary constructors
+dotnet_diagnostic.IDE0300.severity = none   # Collection initialization can be simplified
 
 dotnet_diagnostic.SA0001.severity = none
 dotnet_diagnostic.SA1008.severity = none

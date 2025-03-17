@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Reflection;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace AppExtensionsLib;
 
 public static class UnhandledExceptionLogger
 {
-    public static void SetupExceptionLogging(Action<Exception, string, object[]> errorHandler = null)
+    public static void SetupExceptionLogging(ILogger logger = null)
     {
         AppDomain.CurrentDomain.UnhandledException += (s, e) =>
         {
@@ -30,14 +31,11 @@ public static class UnhandledExceptionLogger
             }
             catch (Exception ex)
             {
-                errorHandler?.Invoke(ex, $"Exception in {nameof(LogUnhandledException)}", null);
+                logger?.LogError(ex, $"Exception in {nameof(LogUnhandledException)}", null);
             }
             finally
             {
-                errorHandler?.Invoke(
-                    exception,
-                    "Unhandled exception in {name} v{version}. Source: {source}",
-                    new object[] { name, version, source });
+                logger?.LogError(exception, "Unhandled exception in {name} v{version}. Source: {source}", name, version, source);
             }
         }
     }
